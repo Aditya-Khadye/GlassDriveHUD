@@ -6,25 +6,28 @@
 //
 
 import SwiftUI
-import RealityKit
-import RealityKitContent
 
 struct ContentView: View {
+    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
-        VStack {
-            Model3D(named: "Scene", bundle: realityKitContentBundle)
-                .padding(.bottom, 50)
+        VStack(spacing: 20) {
+            Button("Open Left View") {
+                openWindow(id: "Left")
+            }
 
-            Text("Hello, world!")
+            Button("Open Center View") {
+                openWindow(id: "Center")
+            }
 
-            ToggleImmersiveSpaceButton()
+            Button("Open Right View") {
+                openWindow(id: "Right")
+            }
+
+            Button("Open Speed HUD") {
+                openWindow(id: "Speed")
+            }
         }
         .padding()
     }
-}
-
-#Preview(windowStyle: .automatic) {
-    ContentView()
-        .environment(AppModel())
 }

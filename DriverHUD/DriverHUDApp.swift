@@ -9,25 +9,36 @@ import SwiftUI
 
 @main
 struct DriverHUDApp: App {
-
-    @State private var appModel = AppModel()
-
     var body: some Scene {
-        WindowGroup {
+        WindowGroup(id: "Main") {
             ContentView()
-                .environment(appModel)
+                .onAppear {
+                    WindowCoordinator.shared.openWindow = { id in
+                        UIApplication.shared.requestSceneSessionActivation(nil, userActivity: makeUserActivity(id: id), options: nil, errorHandler: nil)
+                    }
+                }
         }
 
-        ImmersiveSpace(id: appModel.immersiveSpaceID) {
-            ImmersiveView()
-                .environment(appModel)
-                .onAppear {
-                    appModel.immersiveSpaceState = .open
-                }
-                .onDisappear {
-                    appModel.immersiveSpaceState = .closed
-                }
+        WindowGroup(id: "Left") {
+            LeftDrivingView()
         }
-        .immersionStyle(selection: .constant(.progressive), in: .progressive)
+
+        WindowGroup(id: "Center") {
+            CenterDrivingView()
+        }
+
+        WindowGroup(id: "Right") {
+            RightDrivingView()
+        }
+
+        WindowGroup(id: "Speed") {
+            SpeedHUD()
+        }
+    }
+
+    private func makeUserActivity(id: String) -> NSUserActivity {
+        let activity = NSUserActivity(activityType: "com.example.DriverHUD.openWindow")
+        activity.targetContentIdentifier = id
+        return activity
     }
 }
